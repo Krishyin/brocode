@@ -109,32 +109,11 @@ npm run preview
 
 ---
 
-## 5. Deployment to GitHub Pages
+## 5. Live Website & Deployment
 
-The application is fully configured for GitHub Pages with relative asset path resolution (`base: './'`), so it works seamlessly under repository subpaths (e.g. `https://<username>.github.io/<repository-name>/`).
+Live Website: **[https://Krishyin.github.io/brocode/](https://Krishyin.github.io/brocode/)**
 
-### Quick Deploy via GitHub Actions (Recommended)
-
-1. **Initialize Git Repository** (if not already done):
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: initial commit for Ramakrishnan birthday experience"
-   ```
-
-2. **Create a new repository on GitHub** (e.g., `debug-yourself` or `birthday-ramakrishnan`).
-
-3. **Link remote and push `main` branch**:
-   ```bash
-   git remote add origin https://github.com/<your-username>/<repo-name>.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-4. **Enable GitHub Pages in Repository Settings**:
-   - Navigate to your repository on GitHub: `Settings` &rarr; `Pages`.
-   - Under **Build and deployment** &rarr; **Source**, select **GitHub Actions**.
-   - The included workflow file (`.github/workflows/deploy.yml`) will automatically trigger, build the application, and publish it live!
+The application is hosted on GitHub Pages via GitHub Actions with relative asset path resolution (`base: './'`).
 
 ---
 
