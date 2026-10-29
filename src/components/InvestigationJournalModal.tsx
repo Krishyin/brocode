@@ -38,16 +38,16 @@ export const InvestigationJournalModal: React.FC<Props> = ({
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-dev-border bg-dev-panel/50">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-dev-border bg-dev-panel/50">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-dev-amber/10 border border-dev-amber/30 flex items-center justify-center text-dev-amber-light">
+            <div className="w-8 h-8 rounded-lg bg-dev-amber/10 border border-dev-amber/30 flex items-center justify-center text-dev-amber-light shrink-0">
               <BookOpen className="w-4 h-4" />
             </div>
             <div>
               <h2 id="journal-modal-title" className="text-sm font-semibold tracking-wide text-dev-textBright font-mono uppercase">
                 Investigation Journal
               </h2>
-              <p className="text-xs text-dev-textMuted font-mono">
+              <p className="text-[11px] sm:text-xs text-dev-textMuted font-mono">
                 ENGINEERING NOTEBOOK // DISCOVERIES: {unlockedCount} / {entriesOrder.length}
               </p>
             </div>
@@ -62,7 +62,7 @@ export const InvestigationJournalModal: React.FC<Props> = ({
         </div>
 
         {/* Entries list */}
-        <div className="p-6 overflow-y-auto space-y-4">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-4">
           {entriesOrder.map((sceneId, idx) => {
             const isUnlocked = unlockedScenes.includes(sceneId);
             const entry: JournalEntry = INITIAL_JOURNAL_ENTRIES[sceneId];

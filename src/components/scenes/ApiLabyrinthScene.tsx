@@ -130,10 +130,10 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
         </div>
 
         {/* Tab Headers */}
-        <div className="flex border-b border-dev-border bg-dev-surface font-mono text-xs">
+        <div className="flex border-b border-dev-border bg-dev-surface font-mono text-xs overflow-x-auto">
           <button
             onClick={() => setActiveTab('headers')}
-            className={`px-5 py-3 border-r border-dev-border transition-colors flex items-center space-x-2 ${
+            className={`px-4 sm:px-5 py-3 border-r border-dev-border transition-colors flex items-center space-x-2 shrink-0 ${
               activeTab === 'headers' ? 'bg-dev-panel text-dev-amber-light font-bold' : 'text-dev-textDim hover:text-dev-textBright'
             }`}
           >
@@ -144,7 +144,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
 
           <button
             onClick={() => setActiveTab('body')}
-            className={`px-5 py-3 border-r border-dev-border transition-colors flex items-center space-x-2 ${
+            className={`px-4 sm:px-5 py-3 border-r border-dev-border transition-colors flex items-center space-x-2 shrink-0 ${
               activeTab === 'body' ? 'bg-dev-panel text-dev-amber-light font-bold' : 'text-dev-textDim hover:text-dev-textBright'
             }`}
           >
@@ -154,7 +154,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
 
           <button
             onClick={() => setActiveTab('response')}
-            className={`px-5 py-3 transition-colors flex items-center space-x-2 ${
+            className={`px-4 sm:px-5 py-3 transition-colors flex items-center space-x-2 shrink-0 ${
               activeTab === 'response' ? 'bg-dev-panel text-dev-amber-light font-bold' : 'text-dev-textDim hover:text-dev-textBright'
             }`}
           >

@@ -159,6 +159,39 @@ export const WorkstationHeader: React.FC<Props> = ({
           </button>
         </div>
       </div>
+
+      {/* Mobile Sub-Navigation Bar */}
+      {currentScene !== 'boot' && (
+        <div className="md:hidden border-t border-dev-border/70 bg-dev-panel/50 px-3 py-1.5 overflow-x-auto flex items-center space-x-1.5 scrollbar-none">
+          {sceneLabels.map(({ id, label }) => {
+            const isUnlocked = unlockedScenes.includes(id);
+            const isCurrent = currentScene === id;
+
+            return (
+              <button
+                key={id}
+                onClick={() => isUnlocked && onSelectScene(id)}
+                disabled={!isUnlocked}
+                className={`shrink-0 px-2 py-0.5 rounded text-[11px] font-mono transition-all flex items-center space-x-1 ${
+                  isCurrent
+                    ? 'bg-dev-amber/20 text-dev-amber-light border border-dev-amber/50 font-bold'
+                    : isUnlocked
+                    ? 'text-dev-textDim bg-dev-surface border border-dev-border hover:text-dev-textBright'
+                    : 'text-dev-textMuted/40 bg-dev-bg/40 border border-dev-border/30 cursor-not-allowed'
+                }`}
+              >
+                {isUnlocked && id !== 'birthdayReveal' && (
+                  <CheckCircle2 className="w-2.5 h-2.5 text-dev-green-light shrink-0" />
+                )}
+                {id === 'birthdayReveal' && isUnlocked && (
+                  <Sparkles className="w-2.5 h-2.5 text-dev-amber-light shrink-0" />
+                )}
+                <span>{label}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </header>
   );
 };

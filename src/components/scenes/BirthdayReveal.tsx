@@ -103,7 +103,7 @@ export const BirthdayReveal: React.FC<Props> = ({
               <span className="text-xs font-mono tracking-[0.25em] text-dev-amber-light uppercase block">
                 INCIDENT BD-001 // ROOT CAUSE IDENTIFIED
               </span>
-              <h1 className="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-dev-textBright drop-shadow-sm">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold tracking-tight text-dev-textBright drop-shadow-sm">
                 HAPPY BIRTHDAY, RAMAKRISHNAN
               </h1>
               <div className="w-20 h-0.5 bg-dev-amber/50 mx-auto mt-4 rounded-full"></div>
@@ -113,7 +113,7 @@ export const BirthdayReveal: React.FC<Props> = ({
 
         {/* The Personal Birthday Letter */}
         {revealStep >= 4 && (
-          <div className="rounded-2xl bg-dev-surface/90 border border-dev-border/80 shadow-2xl p-6 sm:p-12 space-y-6 animate-fade-in text-dev-textMain font-serif text-base sm:text-lg leading-[1.9] selection:bg-dev-amber/20">
+          <div className="rounded-2xl bg-dev-surface/90 border border-dev-border/80 shadow-2xl p-5 sm:p-12 space-y-6 animate-fade-in text-dev-textMain font-serif text-base sm:text-lg leading-[1.8] sm:leading-[1.9] selection:bg-dev-amber/20">
             <p>
               When I first started in IT, there were so many things I didn't understand. Even something as simple as passing a variable between screens in Power Apps felt unfamiliar. Words like API, endpoint, headers, payload, and JSON sounded intimidating.
             </p>

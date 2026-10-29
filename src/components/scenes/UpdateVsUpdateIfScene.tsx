@@ -166,29 +166,29 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
       </div>
 
       {/* Challenge Tabs */}
-      <div className="flex items-center space-x-3 border-b border-dev-border pb-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 border-b border-dev-border pb-3">
         <button
           onClick={handleSwitchToChallengeA}
-          className={`px-4 py-2 rounded-lg text-xs font-mono font-medium transition-all flex items-center space-x-2 ${
+          className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-mono font-medium transition-all flex items-center justify-center sm:justify-start space-x-2 ${
             activeChallenge === 'A'
               ? 'bg-dev-panel border border-dev-amber/50 text-dev-amber-light shadow-sm'
               : 'text-dev-textDim hover:text-dev-textBright hover:bg-dev-panel/50'
           }`}
         >
-          {challengeASolved && <CheckCircle2 className="w-3.5 h-3.5 text-dev-green-light" />}
-          <span>Challenge A: Update() — Single Specific Record</span>
+          {challengeASolved && <CheckCircle2 className="w-3.5 h-3.5 text-dev-green-light shrink-0" />}
+          <span>Challenge A: Update() <span className="hidden sm:inline">— Single Specific Record</span></span>
         </button>
 
         <button
           onClick={handleSwitchToChallengeB}
-          className={`px-4 py-2 rounded-lg text-xs font-mono font-medium transition-all flex items-center space-x-2 ${
+          className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-mono font-medium transition-all flex items-center justify-center sm:justify-start space-x-2 ${
             activeChallenge === 'B'
               ? 'bg-dev-panel border border-dev-amber/50 text-dev-amber-light shadow-sm'
               : 'text-dev-textDim hover:text-dev-textBright hover:bg-dev-panel/50'
           }`}
         >
-          {challengeBSolved && <CheckCircle2 className="w-3.5 h-3.5 text-dev-green-light" />}
-          <span>Challenge B: UpdateIf() — Conditional Batch</span>
+          {challengeBSolved && <CheckCircle2 className="w-3.5 h-3.5 text-dev-green-light shrink-0" />}
+          <span>Challenge B: UpdateIf() <span className="hidden sm:inline">— Conditional Batch</span></span>
         </button>
       </div>
 
