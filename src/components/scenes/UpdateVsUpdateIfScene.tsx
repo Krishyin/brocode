@@ -18,14 +18,14 @@ interface TableRow {
   id: string;
   employee: string;
   department: string;
-  status: 'Active' | 'Inactive';
+  status: string;
   justUpdated?: boolean;
 }
 
 const INITIAL_EMPLOYEES: TableRow[] = [
-  { id: '1', employee: 'Anu', department: 'IT', status: 'Active' },
-  { id: '2', employee: 'Bala', department: 'HR', status: 'Active' },
-  { id: '3', employee: 'Charan', department: 'IT', status: 'Inactive' },
+  { id: '1', employee: 'Krishna', department: 'IT', status: 'Learning' },
+  { id: '2', employee: 'Hema', department: 'Solutions', status: 'Active' },
+  { id: '3', employee: 'Ramakrishnan', department: 'IT', status: 'Lead' },
 ];
 
 export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
@@ -35,47 +35,47 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
   const [challengeBSolved, setChallengeBSolved] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  // Challenge A Options (Update one specific record)
+  // Challenge A Options (Update Krishna specifically)
   const challengeAOptions = [
     {
       id: 'A1',
-      code: 'Update(\n    Employees,\n    LookUp(Employees, Employee = "Anu"),\n    { Employee: "Anu", Department: "IT", Status: "Inactive" }\n)',
+      code: 'Update(\n    Employees,\n    LookUp(Employees, Employee = "Krishna"),\n    { Employee: "Krishna", Department: "IT", Status: "Understood" }\n)',
       isCorrect: true,
-      explanation: 'Correct! Update() targets the exact record instance returned by LookUp() and replaces it with the supplied record. Only Anu changes.'
+      explanation: 'Spot on! Update() targets the single record instance returned by LookUp() and replaces it with the supplied record. Only Krishna’s row is updated.'
     },
     {
       id: 'A2',
-      code: 'UpdateIf(\n    Employees,\n    Employee = "Anu",\n    { Status: "Inactive" }\n)',
+      code: 'UpdateIf(\n    Employees,\n    Employee = "Krishna",\n    { Status: "Understood" }\n)',
       isCorrect: false,
-      explanation: 'UpdateIf() works by condition, but this challenge asks specifically for the Update() pattern targeting a single referenced record.'
+      explanation: 'While UpdateIf() can match a condition, this challenge specifically tests the Update() pattern which takes a specific record reference.'
     },
     {
       id: 'A3',
-      code: 'Update(\n    Employees,\n    { Status: "Inactive" }\n)',
+      code: 'Update(\n    Employees,\n    { Status: "Understood" }\n)',
       isCorrect: false,
-      explanation: 'Syntax error: Update() requires the target record reference as its 2nd argument before the replacement record.'
+      explanation: 'Syntax error: Update() requires the original record reference as its 2nd argument before the replacement record.'
     }
   ];
 
-  // Challenge B Options (Update records matching condition)
+  // Challenge B Options (Update both IT members: Krishna & Ramakrishnan)
   const challengeBOptions = [
     {
       id: 'B1',
-      code: 'UpdateIf(\n    Employees,\n    Department = "IT",\n    { Status: "Inactive" }\n)',
+      code: 'UpdateIf(\n    Employees,\n    Department = "IT",\n    { Status: "Production Ready" }\n)',
       isCorrect: true,
-      explanation: 'Correct! UpdateIf() evaluates every record against the condition (Department = "IT") and modifies the specified fields for all matches. Bala (HR) is untouched.'
+      explanation: 'Bingo! UpdateIf() evaluates every record against the condition (Department = "IT") and modifies matching fields for both Krishna and Ramakrishnan. Hema is left untouched.'
     },
     {
       id: 'B2',
-      code: 'Update(\n    Employees,\n    Department = "IT",\n    { Status: "Inactive" }\n)',
+      code: 'Update(\n    Employees,\n    Department = "IT",\n    { Status: "Production Ready" }\n)',
       isCorrect: false,
-      explanation: 'Update() cannot accept a condition expression—it requires an exact record reference. For bulk or conditional changes, UpdateIf() is required.'
+      explanation: 'Update() cannot accept a condition expression; it requires a direct record reference. For bulk conditional updates, UpdateIf() is mandatory.'
     },
     {
       id: 'B3',
-      code: 'UpdateIf(\n    Employees,\n    Department = "HR",\n    { Status: "Inactive" }\n)',
+      code: 'UpdateIf(\n    Employees,\n    Department = "Solutions",\n    { Status: "Production Ready" }\n)',
       isCorrect: false,
-      explanation: 'Condition mismatch: The prompt asks to update all IT employees, not HR.'
+      explanation: 'Condition mismatch: The challenge asks to update the IT department, not Solutions.'
     }
   ];
 
@@ -86,11 +86,11 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
     if (activeChallenge === 'A') {
       const opt = challengeAOptions.find(o => o.id === optId);
       if (opt?.isCorrect) {
-        // Update only Anu
+        // Update only Krishna
         setTableData([
-          { id: '1', employee: 'Anu', department: 'IT', status: 'Inactive', justUpdated: true },
-          { id: '2', employee: 'Bala', department: 'HR', status: 'Active', justUpdated: false },
-          { id: '3', employee: 'Charan', department: 'IT', status: 'Inactive', justUpdated: false },
+          { id: '1', employee: 'Krishna', department: 'IT', status: 'Understood', justUpdated: true },
+          { id: '2', employee: 'Hema', department: 'Solutions', status: 'Active', justUpdated: false },
+          { id: '3', employee: 'Ramakrishnan', department: 'IT', status: 'Lead', justUpdated: false },
         ]);
         setChallengeASolved(true);
         soundEffects.success();
@@ -98,11 +98,11 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
     } else {
       const opt = challengeBOptions.find(o => o.id === optId);
       if (opt?.isCorrect) {
-        // Update both IT rows (Anu & Charan)
+        // Update both IT rows (Krishna & Ramakrishnan)
         setTableData([
-          { id: '1', employee: 'Anu', department: 'IT', status: 'Inactive', justUpdated: true },
-          { id: '2', employee: 'Bala', department: 'HR', status: 'Active', justUpdated: false },
-          { id: '3', employee: 'Charan', department: 'IT', status: 'Inactive', justUpdated: true },
+          { id: '1', employee: 'Krishna', department: 'IT', status: 'Production Ready', justUpdated: true },
+          { id: '2', employee: 'Hema', department: 'Solutions', status: 'Active', justUpdated: false },
+          { id: '3', employee: 'Ramakrishnan', department: 'IT', status: 'Production Ready', justUpdated: true },
         ]);
         setChallengeBSolved(true);
         soundEffects.success();
@@ -176,7 +176,7 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
           }`}
         >
           {challengeASolved && <CheckCircle2 className="w-3.5 h-3.5 text-dev-green-light shrink-0" />}
-          <span>Challenge A: Update() <span className="hidden sm:inline">— Single Specific Record</span></span>
+          <span>Challenge A: Update() <span className="hidden sm:inline">— Single Record (Krishna)</span></span>
         </button>
 
         <button
@@ -188,7 +188,7 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
           }`}
         >
           {challengeBSolved && <CheckCircle2 className="w-3.5 h-3.5 text-dev-green-light shrink-0" />}
-          <span>Challenge B: UpdateIf() <span className="hidden sm:inline">— Conditional Batch</span></span>
+          <span>Challenge B: UpdateIf() <span className="hidden sm:inline">— Conditional Batch (IT Team)</span></span>
         </button>
       </div>
 
@@ -200,7 +200,7 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
             <div className="px-4 py-3 bg-dev-panel border-b border-dev-border flex items-center justify-between">
               <div className="flex items-center space-x-2 text-xs font-mono">
                 <Table className="w-4 h-4 text-dev-amber-light" />
-                <span className="font-bold text-dev-textBright">Collection: Employees</span>
+                <span className="font-bold text-dev-textBright">Collection: TeamMembers</span>
               </div>
               <button
                 onClick={() => {
@@ -219,7 +219,7 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
               <table className="w-full text-left font-mono text-xs">
                 <thead>
                   <tr className="border-b border-dev-border text-dev-textMuted">
-                    <th className="pb-2 font-medium">Employee</th>
+                    <th className="pb-2 font-medium">Team Member</th>
                     <th className="pb-2 font-medium">Department</th>
                     <th className="pb-2 font-medium">Status</th>
                   </tr>
@@ -235,7 +235,7 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
                       }`}
                     >
                       <td className="py-2.5 flex items-center space-x-1.5">
-                        <span>{row.employee}</span>
+                        <span className="font-semibold">{row.employee}</span>
                         {row.justUpdated && (
                           <span className="text-[10px] px-1 rounded bg-dev-amber/30 text-dev-amber-light">
                             MODIFIED
@@ -245,8 +245,10 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
                       <td className="py-2.5 text-dev-textDim">{row.department}</td>
                       <td className="py-2.5">
                         <span className={`px-2 py-0.5 rounded text-[11px] ${
-                          row.status === 'Active' 
+                          row.status === 'Production Ready' || row.status === 'Understood' || row.status === 'Lead'
                             ? 'bg-dev-green/15 text-dev-green-light border border-dev-green/30' 
+                            : row.status === 'Learning'
+                            ? 'bg-dev-amber/15 text-dev-amber-light border border-dev-amber/30'
                             : 'bg-dev-border text-dev-textMuted'
                         }`}>
                           {row.status}
@@ -259,8 +261,8 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
             </div>
 
             <div className="px-4 py-2.5 bg-dev-panel/50 border-t border-dev-border text-[11px] font-mono text-dev-textMuted flex items-center justify-between">
-              <span>Rows: 3</span>
-              <span>Memory Engine: Power Fx local collection</span>
+              <span>Colleagues: Krishna, Hema, Ramakrishnan</span>
+              <span>Local Collection Engine</span>
             </div>
           </div>
 
@@ -272,7 +274,7 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
             </div>
             <div className="space-y-1.5 text-dev-textDim font-sans">
               <div>
-                <strong className="text-dev-amber-light font-mono">Update():</strong> Updates a specific existing record by replacing it with a supplied record. (One selected record)
+                <strong className="text-dev-amber-light font-mono">Update():</strong> Updates a specific existing record by replacing it with a supplied record. (One selected record target)
               </div>
               <div>
                 <strong className="text-dev-amber-light font-mono">UpdateIf():</strong> Updates the fields specified in a change record for every record that matches a condition. (Conditional multi-record)
@@ -283,19 +285,19 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
 
         {/* Right: Challenge Prompts & Options */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="p-4 rounded-xl bg-dev-surface border border-dev-border space-y-3">
+          <div className="p-4 rounded-xl bg-dev-surface border border-dev-border space-y-2">
             <div className="text-xs font-mono text-dev-amber-light uppercase tracking-wider font-semibold">
               {activeChallenge === 'A' ? 'Challenge A Objective:' : 'Challenge B Objective:'}
             </div>
 
             <p className="text-sm font-sans text-dev-textBright">
               {activeChallenge === 'A' 
-                ? '“Change Anu\'s status from Active to Inactive. Leave every other record unchanged.”'
-                : '“Change the status of every employee in the IT department to Inactive. Leave HR records unchanged.”'}
+                ? '“Change Krishna\'s status from \'Learning\' to \'Understood\'. Leave Ramakrishnan and Hema unchanged.”'
+                : '“Change the status of every team member in the IT department (Krishna and Ramakrishnan) to \'Production Ready\'. Leave Hema in Solutions unchanged.”'}
             </p>
           </div>
 
-          {/* Selectable Options */}
+          {/* Selectable Options - Button ALWAYS inside the card */}
           <div className="space-y-3">
             {(activeChallenge === 'A' ? challengeAOptions : challengeBOptions).map((opt, idx) => {
               const isSelected = selectedOption === opt.id;
@@ -311,19 +313,19 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
                       : 'bg-dev-surface/80 border-dev-border hover:border-dev-borderLight'
                   }`}
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                    <div className="space-y-1">
-                      <span className="text-[11px] font-mono text-dev-textMuted">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <span className="text-[11px] font-mono text-dev-textMuted block">
                         Formula Option {idx + 1}
                       </span>
-                      <pre className="text-xs font-mono text-dev-amber-light bg-dev-bg p-2.5 rounded border border-dev-border overflow-x-auto">
+                      <pre className="text-xs font-mono text-dev-amber-light bg-dev-bg p-2.5 rounded border border-dev-border overflow-x-auto max-w-full">
                         <code>{opt.code}</code>
                       </pre>
                     </div>
 
                     <button
                       onClick={() => handleRunOption(opt.id)}
-                      className="sm:self-center shrink-0 px-3.5 py-2 rounded text-xs font-mono font-bold bg-dev-elevated border border-dev-border text-dev-textBright hover:bg-dev-amber hover:text-dev-bg hover:border-dev-amber transition-all flex items-center justify-center space-x-1.5"
+                      className="w-full md:w-auto shrink-0 px-4 py-2.5 rounded-lg text-xs font-mono font-bold bg-dev-elevated border border-dev-border text-dev-textBright hover:bg-dev-amber hover:text-dev-bg hover:border-dev-amber transition-all flex items-center justify-center space-x-1.5 shadow-sm"
                     >
                       <Play className="w-3.5 h-3.5 fill-current" />
                       <span>Execute</span>
@@ -371,9 +373,9 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
             <div className="text-dev-amber-light font-bold">
               QUESTION: What is the difference between Update() and UpdateIf()?
             </div>
-            <div className="text-dev-textDim">ATTEMPTS: More than one</div>
-            <div className="text-dev-textDim">EARLY RESULT: Sometimes incorrect</div>
-            <div className="text-dev-green-light font-semibold">CURRENT RESULT: Understood</div>
+            <div className="text-dev-textDim">ATTEMPTS: More than once (even after studying it!)</div>
+            <div className="text-dev-textDim">OBSERVERS: Krishna, Ramakrishnan, Hema</div>
+            <div className="text-dev-green-light font-semibold">CURRENT RESULT: Understood completely</div>
           </div>
 
           <div className="space-y-3">
@@ -401,7 +403,7 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
             </div>
             <div className="p-3 rounded bg-dev-panel border border-dev-border">
               <span className="text-[10px] text-dev-textMuted uppercase block">BONUS</span>
-              <span className="text-dev-amber-light font-medium">A mentor who kept asking</span>
+              <span className="text-dev-amber-light font-medium">Ramakrishnan asking again</span>
             </div>
             <div className="p-3 rounded bg-dev-panel border border-dev-border">
               <span className="text-[10px] text-dev-textMuted uppercase block">STATUS</span>
@@ -422,7 +424,7 @@ export const UpdateVsUpdateIfScene: React.FC<Props> = ({ onComplete }) => {
         <div className="text-xs font-mono text-dev-textMuted">
           {allSolved ? (
             <span className="text-dev-green-light flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Shared inside joke & distinction solved! Journal updated.
+              <CheckCircle2 className="w-3.5 h-3.5" /> Inside joke resolved & distinction documented!
             </span>
           ) : (
             <span>Solve both Challenge A and B to unlock the archive memory.</span>

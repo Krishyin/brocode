@@ -181,7 +181,7 @@ export const BirthdayReveal: React.FC<Props> = ({
                 </div>
                 <div className="flex">
                   <span className="w-24 text-dev-textMuted">author:</span>
-                  <span className="text-dev-textBright">Krishna</span>
+                  <span className="text-dev-textBright">Krishna (with love from Hema & team)</span>
                 </div>
                 <div className="flex">
                   <span className="w-24 text-dev-textMuted">recipient:</span>

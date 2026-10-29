@@ -28,33 +28,33 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
   const [activeTab, setActiveTab] = useState<'headers' | 'body' | 'response'>('headers');
 
   const requestMethod = 'POST';
-  const requestEndpoint = '/api/patients';
+  const requestEndpoint = '/api/v1/enterprise/deployments';
   const currentContentType = isFixed ? 'application/json' : 'text/plain';
-  const authHeader = 'Bearer DEMO_TOKEN_7781';
+  const authHeader = 'Bearer RAMAKRISHNAN_ARCHITECT_KEY_9921';
 
-  const requestBodyJson = `{\n  "name": "Sample Patient",\n  "department": "General Medicine"\n}`;
+  const requestBodyJson = `{\n  "serviceName": "PowerApps Enterprise Connector",\n  "leadArchitect": "Ramakrishnan",\n  "deployedBy": "Krishna",\n  "releaseVerifier": "Hema",\n  "targetEnvironment": "Production-Cloud",\n  "autoScale": true\n}`;
 
   const hypotheses: FaultHypothesis[] = [
     {
       id: 'h-url',
-      title: 'Fault: The endpoint URL route is inactive',
-      description: 'Check if /api/patients is misconfigured on the routing table.',
+      title: 'Fault: The endpoint URL route is unregistered',
+      description: 'Check if /api/v1/enterprise/deployments is missing from the gateway route registry.',
       isCorrect: false,
-      feedback: 'Evidence contradiction: The gateway accepted the route /api/patients and reached the controller. The error was generated inside the controller.'
+      feedback: 'Evidence contradiction: The API gateway matched the route successfully and forwarded traffic to the deployment controller. The fault occurred downstream inside content negotiation.'
     },
     {
       id: 'h-auth',
-      title: 'Fault: Authorization bearer token is expired',
-      description: 'Check if Bearer DEMO_TOKEN_7781 was rejected by security middleware.',
+      title: 'Fault: Ramakrishnan’s Architect Token is expired',
+      description: 'Check if RAMAKRISHNAN_ARCHITECT_KEY_9921 was rejected by security middleware.',
       isCorrect: false,
-      feedback: 'Evidence contradiction: The server returned HTTP 415 (Unsupported Media Type), not HTTP 401 Unauthorized. The token is valid.'
+      feedback: 'Evidence contradiction: The server returned HTTP 415 (Unsupported Media Type), not HTTP 401 Unauthorized. Ramakrishnan’s lead credentials passed with flying colors.'
     },
     {
       id: 'h-header',
-      title: 'Fault: Content-Type header mismatch',
-      description: 'The body contains formatted JSON, but Content-Type is declared as text/plain.',
+      title: 'Fault: Content-Type header declared as text/plain',
+      description: 'The body contains formatted JSON, but the request header claims it is text/plain.',
       isCorrect: true,
-      feedback: 'Root cause identified! The body contains structured JSON, but the request was sent with "Content-Type: text/plain". The server cannot deserialize it into a patient object without the proper MIME type header.'
+      feedback: 'Root cause identified! Krishna sent structured JSON containing Ramakrishnan, Krishna, and Hema, but the request was marked with "Content-Type: text/plain". The server parser requires "application/json" to deserialize the payload.'
     }
   ];
 
@@ -88,19 +88,19 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
             <span className="w-2 h-2 rounded-full bg-dev-amber"></span>
             <span>SCENE 04 // THE API LABYRINTH</span>
             <span className="text-dev-border">•</span>
-            <span>HTTP REQUEST & PROTOCOL INSPECTOR</span>
+            <span>ENTERPRISE AUTOMATION GATEWAY</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-dev-textBright mt-1">
             Demystifying the HTTP Inspector
           </h1>
           <p className="text-sm text-dev-textDim mt-1">
-            Words that once sounded formidable—endpoints, payloads, headers, status codes—are now clear architectural levers.
+            Investigate Krishna's automated deployment request for Ramakrishnan's enterprise connector service. Diagnose why the server returned 415.
           </p>
         </div>
 
         <div className="flex items-center space-x-2 text-xs font-mono bg-dev-panel px-3 py-1.5 rounded-lg border border-dev-border">
-          <span className="text-dev-textMuted">SIMULATED PROTOCOL:</span>
-          <span className="text-dev-amber-light font-bold">HTTP/1.1 REST</span>
+          <span className="text-dev-textMuted">SERVICE:</span>
+          <span className="text-dev-amber-light font-bold">Cloud Enterprise Gateway</span>
         </div>
       </div>
 
@@ -112,9 +112,9 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
             <span className="px-2.5 py-1 rounded bg-dev-amber/20 text-dev-amber-light font-bold">
               {requestMethod}
             </span>
-            <div className="px-3 py-1 rounded bg-dev-bg border border-dev-border text-dev-textBright flex-1 flex items-center justify-between">
-              <span>https://api.internal.hospital.local{requestEndpoint}</span>
-              <span className="text-[11px] text-dev-textMuted hidden md:inline">DEMO_SANDBOX</span>
+            <div className="px-3 py-1 rounded bg-dev-bg border border-dev-border text-dev-textBright flex-1 flex items-center justify-between overflow-hidden">
+              <span className="truncate">https://gateway.cloud.internal{requestEndpoint}</span>
+              <span className="text-[11px] text-dev-textMuted hidden md:inline shrink-0 ml-2">PROD_PIPELINE</span>
             </div>
           </div>
 
@@ -149,7 +149,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
             }`}
           >
             <FileJson className="w-3.5 h-3.5" />
-            <span>Payload Body (JSON)</span>
+            <span>Deployment Payload (JSON)</span>
           </button>
 
           <button
@@ -159,7 +159,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
             }`}
           >
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Response Trace</span>
+            <span>Gateway Response</span>
           </button>
         </div>
 
@@ -168,7 +168,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
           {activeTab === 'headers' && (
             <div className="space-y-3 animate-fade-in">
               <div className="text-xs text-dev-textMuted uppercase tracking-wider mb-2">
-                Request Headers (Metadata transmitted with payload)
+                Request Headers (Metadata transmitted with pipeline payload)
               </div>
 
               <div className="p-3 rounded bg-dev-surface border border-dev-border flex items-center justify-between">
@@ -176,7 +176,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
                   <span className="text-dev-textMuted">Authorization: </span>
                   <span className="text-dev-textBright">{authHeader}</span>
                 </div>
-                <span className="text-[11px] text-dev-green-light">VALID</span>
+                <span className="text-[11px] text-dev-green-light">AUTHENTICATED</span>
               </div>
 
               <div className={`p-3 rounded border flex items-center justify-between ${
@@ -203,7 +203,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
           {activeTab === 'body' && (
             <div className="space-y-3 animate-fade-in">
               <div className="text-xs text-dev-textMuted uppercase tracking-wider">
-                Request JSON Body (Data Payload)
+                Deployment Contract Payload (JSON)
               </div>
               <pre className="p-4 rounded bg-dev-surface border border-dev-border text-dev-textBright overflow-x-auto leading-relaxed">
                 <code>{requestBodyJson}</code>
@@ -214,7 +214,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
           {activeTab === 'response' && (
             <div className="space-y-3 animate-fade-in">
               <div className="text-xs text-dev-textMuted uppercase tracking-wider flex items-center justify-between">
-                <span>Server Response Body</span>
+                <span>Enterprise Gateway Response</span>
                 <span className={isFixed ? 'text-dev-green-light' : 'text-dev-red-light'}>
                   {isFixed ? 'Status: 200 OK' : 'Status: 415 Unsupported Media Type'}
                 </span>
@@ -223,19 +223,21 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
               {isFixed ? (
                 <pre className="p-4 rounded bg-dev-green-glow border border-dev-green-light/40 text-dev-green-light overflow-x-auto leading-relaxed">
                   <code>{JSON.stringify({
-                    status: "success",
                     statusCode: 200,
-                    message: "Patient record registered successfully",
-                    patientId: "PT-9042",
-                    timestamp: "2026-10-29T07:44:00Z"
+                    status: "success",
+                    deploymentId: "DEP-RAM-2026-CLOUD",
+                    leadArchitect: "Ramakrishnan",
+                    developer: "Krishna",
+                    qaVerifier: "Hema",
+                    message: "Enterprise pipeline validated and approved for production!"
                   }, null, 2)}</code>
                 </pre>
               ) : (
                 <pre className="p-4 rounded bg-dev-red-glow border border-dev-red-light/40 text-dev-red-light overflow-x-auto leading-relaxed">
                   <code>{JSON.stringify({
-                    error: "Unsupported Media Type",
                     statusCode: 415,
-                    message: "Server expected Content-Type 'application/json' to parse payload, but received 'text/plain'. Aborting deserialization."
+                    error: "Unsupported Media Type",
+                    message: "Gateway expected Content-Type 'application/json' to parse pipeline deployment, but received 'text/plain'. Deserialization halted."
                   }, null, 2)}</code>
                 </pre>
               )}
@@ -248,7 +250,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-xs font-mono text-dev-textMuted uppercase tracking-wider">
-            Hypothesis Selection: Diagnose the 415 error
+            Diagnostic Hypotheses: Identify Why The Gateway Rejected The Call
           </span>
           {isFixed && (
             <button
@@ -323,7 +325,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
                     <div className="pt-2 flex justify-end">
                       <button
                         onClick={handleApplyFix}
-                        className="px-5 py-2.5 rounded-lg bg-dev-green-light text-dev-bg font-mono font-bold text-xs uppercase tracking-wider hover:bg-dev-green shadow-lg flex items-center space-x-2 transition-all hover:scale-[1.01]"
+                        className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-dev-green-light text-dev-bg font-mono font-bold text-xs uppercase tracking-wider hover:bg-dev-green shadow-lg flex items-center justify-center space-x-2 transition-all hover:scale-[1.01]"
                       >
                         <Sliders className="w-4 h-4" />
                         <span>Patch Header: Set Content-Type: application/json</span>
@@ -349,11 +351,9 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
           </div>
 
           <div className="font-mono text-xs text-dev-textDim space-y-1">
-            <div>MIME Contract: Validated</div>
-            <div>Server Deserializer: Executed in 14ms</div>
-            <div className="text-dev-textBright font-semibold">
-              Patient #PT-9042 successfully registered in simulated hospital database.
-            </div>
+            <div>MIME Protocol Contract: Verified</div>
+            <div>Lead Architect: Ramakrishnan</div>
+            <div>Release Pipeline: Krishna & Hema cleared for production deployment</div>
           </div>
 
           <div className="pt-3 border-t border-dev-border/60">
@@ -369,7 +369,7 @@ export const ApiLabyrinthScene: React.FC<Props> = ({ onComplete }) => {
         <div className="text-xs font-mono text-dev-textMuted">
           {isFixed ? (
             <span className="text-dev-green-light flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Request contract repaired. Evidence stored in journal.
+              <CheckCircle2 className="w-3.5 h-3.5" /> Pipeline request repaired. Evidence logged to journal.
             </span>
           ) : (
             <span>Diagnose and patch the Content-Type header to resolve the request.</span>

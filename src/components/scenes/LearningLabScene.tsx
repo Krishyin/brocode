@@ -23,7 +23,7 @@ interface FormulaOption {
 }
 
 export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
-  const [greetingText, setGreetingText] = useState('Hello, Ramakrishnan!');
+  const [greetingText, setGreetingText] = useState('Hello Ramakrishnan, from Krishna & Hema!');
   const [selectedFormulaId, setSelectedFormulaId] = useState<string>('');
   const [activeScreen, setActiveScreen] = useState<'ScreenA' | 'ScreenB'>('ScreenA');
   const [executionResult, setExecutionResult] = useState<{
@@ -42,22 +42,22 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
       id: 'incomplete-nav',
       code: 'Navigate(ScreenB, ScreenTransition.Fade)',
       isCorrect: false,
-      explanation: 'Screen B was loaded, but no context record was passed in the 3rd argument. The destination screen received nothing.',
-      hint: 'Navigate takes an optional 3rd argument { contextVariable: value } to pass data directly to the new screen.'
+      explanation: 'Screen B loaded, but no context record was passed in the 3rd argument. The destination screen received nothing.',
+      hint: 'Navigate takes an optional 3rd argument { contextVariable: value } to pass data directly to the destination screen.'
     },
     {
       id: 'global-set',
       code: `Set(gblGreeting, "${greetingText}");\nNavigate(ScreenB, ScreenTransition.Fade)`,
       isCorrect: false,
       explanation: 'Set() creates a global variable (gblGreeting) accessible everywhere. It works, but pollutes global memory when screen-specific context is preferred.',
-      hint: 'Ramakrishnan encouraged using the 3rd argument of Navigate() for clean, screen-scoped context variables.'
+      hint: 'Ramakrishnan encouraged using the 3rd argument of Navigate() for clean, isolated screen context variables.'
     },
     {
       id: 'correct-context',
       code: `Navigate(\n    ScreenB,\n    ScreenTransition.Fade,\n    { greeting: "${greetingText}" }\n)`,
       isCorrect: true,
-      explanation: 'Correct! The 3rd argument { greeting: ... } instantiates a local context record passed directly into Screen B.',
-      hint: 'Screen B can now immediately bind to the local context variable "greeting".'
+      explanation: 'Spot on! The 3rd argument { greeting: ... } passes a clean context record directly to Screen B.',
+      hint: 'Screen B can now directly render the local context variable "greeting".'
     }
   ];
 
@@ -66,7 +66,6 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
     soundEffects.click();
 
     if (option.isCorrect) {
-      // Simulate screen transition to Screen B with data
       setActiveScreen('ScreenB');
       setExecutionResult({
         status: 'success',
@@ -105,13 +104,13 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
             <span className="w-2 h-2 rounded-full bg-dev-amber"></span>
             <span>SCENE 02 // THE LEARNING LAB</span>
             <span className="text-dev-border">•</span>
-            <span>POWER APPS RUNTIME SIMULATION</span>
+            <span>POWER APPS SCREEN NAVIGATION</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-dev-textBright mt-1">
             Passing Context Between Screens
           </h1>
           <p className="text-sm text-dev-textDim mt-1">
-            In the early days, navigating between screens and handing over variables felt like a puzzle. Experiment with the formula below.
+            In the early days, navigating between screens and handing over variables in Power Apps felt like a puzzle. Test the formulas below to pass data to Ramakrishnan’s screen.
           </p>
         </div>
 
@@ -132,7 +131,7 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
             <span>Power Apps Architecture: Local Context vs Global State</span>
           </div>
           <p className="text-dev-textMain leading-relaxed font-sans">
-            In Power Apps, <code className="text-dev-amber-light font-mono bg-dev-bg px-1.5 py-0.5 rounded">Set()</code> creates a <em>global variable</em> that persists throughout the entire application lifecycle. In contrast, <code className="text-dev-amber-light font-mono bg-dev-bg px-1.5 py-0.5 rounded">Navigate(Screen, Transition, &#123; ContextRecord &#125;)</code> passes <em>screen context</em> directly to the target screen—cleaner, isolated, and easier to reason about.
+            In Power Apps, <code className="text-dev-amber-light font-mono bg-dev-bg px-1.5 py-0.5 rounded">Set()</code> creates a <em>global variable</em> that persists across the whole app. In contrast, <code className="text-dev-amber-light font-mono bg-dev-bg px-1.5 py-0.5 rounded">Navigate(Screen, Transition, &#123; ContextRecord &#125;)</code> passes <em>screen context</em> directly to the target screen—cleaner, isolated, and easier to debug.
           </p>
         </div>
       )}
@@ -146,30 +145,30 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
             <div className="flex items-center justify-between pb-2 border-b border-dev-border text-xs font-mono text-dev-textMuted">
               <div className="flex items-center space-x-1.5">
                 <Smartphone className="w-3.5 h-3.5 text-dev-amber-light" />
-                <span className="text-dev-textBright">PowerApps Player</span>
+                <span className="text-dev-textBright font-semibold">PowerApps Player</span>
               </div>
               <span className="px-2 py-0.5 rounded bg-dev-panel text-[11px] text-dev-textDim">
-                {activeScreen === 'ScreenA' ? 'ScreenA: Welcome' : 'ScreenB: Greeting'}
+                {activeScreen === 'ScreenA' ? 'ScreenA: Krishna Welcome' : 'ScreenB: Ramakrishnan Greeting'}
               </span>
             </div>
 
             {/* Device Screen Body */}
-            <div className="h-80 rounded-xl bg-dev-bg border border-dev-border p-5 flex flex-col justify-between transition-all relative overflow-hidden">
+            <div className="h-84 rounded-xl bg-dev-bg border border-dev-border p-5 flex flex-col justify-between transition-all relative overflow-hidden">
               {activeScreen === 'ScreenA' ? (
                 <div className="space-y-4 animate-fade-in">
                   <div>
                     <span className="text-[10px] font-mono uppercase tracking-wider text-dev-amber-light block">
-                      Screen A
+                      Screen A // Origin
                     </span>
                     <h2 className="text-base font-bold text-dev-textBright">Welcome Screen</h2>
                     <p className="text-xs text-dev-textDim mt-1">
-                      Enter the message to pass to Screen B:
+                      Enter the message to pass to Ramakrishnan on Screen B:
                     </p>
                   </div>
 
                   <div>
                     <label className="text-[11px] font-mono text-dev-textMuted block mb-1">
-                      InputText_Message
+                      InputText_TeamGreeting
                     </label>
                     <input
                       type="text"
@@ -180,10 +179,10 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
                     />
                   </div>
 
-                  <div className="p-3 rounded bg-dev-panel/50 border border-dev-border/60 text-xs text-dev-textMuted font-mono">
-                    Target: ScreenB
-                    <br />
-                    Expected Context: &#123; greeting &#125;
+                  <div className="p-3 rounded bg-dev-panel/50 border border-dev-border/60 text-xs text-dev-textMuted font-mono space-y-1">
+                    <div>Sender: Krishna & Hema</div>
+                    <div>Target: ScreenB (Ramakrishnan)</div>
+                    <div>Expected Parameter: &#123; greeting &#125;</div>
                   </div>
                 </div>
               ) : (
@@ -191,13 +190,13 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-[10px] font-mono uppercase tracking-wider text-dev-amber-light block">
-                        Screen B
+                        Screen B // Destination
                       </span>
                       <h2 className="text-base font-bold text-dev-textBright">Greeting Screen</h2>
                     </div>
                     <button
                       onClick={handleReset}
-                      className="p-1 rounded bg-dev-panel text-dev-textMuted hover:text-dev-textBright text-xs font-mono flex items-center space-x-1"
+                      className="p-1 px-2 rounded bg-dev-panel text-dev-textMuted hover:text-dev-textBright text-xs font-mono flex items-center space-x-1"
                       title="Back to Screen A"
                     >
                       <RotateCcw className="w-3 h-3" />
@@ -205,11 +204,11 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
                     </button>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-2">
                     <span className="text-[11px] font-mono text-dev-textMuted block mb-1">
-                      Binding: Text(greeting)
+                      Label Binding: Text(greeting)
                     </span>
-                    <div className={`p-4 rounded-lg border text-sm font-mono min-h-[64px] flex items-center justify-center text-center ${
+                    <div className={`p-4 rounded-lg border text-sm font-mono min-h-[72px] flex items-center justify-center text-center leading-relaxed ${
                       executionResult.receivedValue
                         ? 'bg-dev-green-glow border-dev-green-light text-dev-textBright font-semibold'
                         : 'bg-dev-panel border-dev-border text-dev-textMuted italic'
@@ -224,8 +223,8 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
 
                   <div className="text-xs font-mono">
                     <span className="text-dev-textMuted">Status: </span>
-                    <span className={executionResult.status === 'success' ? 'text-dev-green-light' : 'text-dev-red-light'}>
-                      {executionResult.status === 'success' ? 'BOUND TO VARIABLE' : 'VARIABLE UNDEFINED'}
+                    <span className={executionResult.status === 'success' ? 'text-dev-green-light font-bold' : 'text-dev-red-light'}>
+                      {executionResult.status === 'success' ? 'CONTEXT BOUND TO RAMAKRISHNAN’S SCREEN' : 'VARIABLE UNDEFINED'}
                     </span>
                   </div>
                 </div>
@@ -235,7 +234,7 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
               {activeScreen === 'ScreenA' && (
                 <div className="pt-2">
                   <div className="w-full py-2.5 px-4 rounded bg-dev-amber/20 border border-dev-amber/40 text-dev-amber-light text-xs font-mono font-medium text-center">
-                    Button: Navigate to Screen B (Run formula on right &rarr;)
+                    Navigate to Screen B (Select formula on right &rarr;)
                   </div>
                 </div>
               )}
@@ -280,19 +279,19 @@ export const LearningLabScene: React.FC<Props> = ({ onComplete }) => {
                     : 'bg-dev-surface/80 border-dev-border hover:border-dev-borderLight'
                 }`}
               >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <span className="text-[11px] font-mono text-dev-textMuted">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div className="space-y-1 min-w-0 flex-1">
+                    <span className="text-[11px] font-mono text-dev-textMuted block">
                       Option {idx + 1}
                     </span>
-                    <pre className="text-xs font-mono text-dev-amber-light bg-dev-bg p-2.5 rounded border border-dev-border overflow-x-auto">
+                    <pre className="text-xs font-mono text-dev-amber-light bg-dev-bg p-2.5 rounded border border-dev-border overflow-x-auto max-w-full">
                       <code>{opt.code}</code>
                     </pre>
                   </div>
 
                   <button
                     onClick={() => handleTestFormula(opt)}
-                    className="sm:self-center shrink-0 px-3.5 py-2 rounded text-xs font-mono font-bold bg-dev-elevated border border-dev-border text-dev-textBright hover:bg-dev-amber hover:text-dev-bg hover:border-dev-amber transition-all flex items-center justify-center space-x-1.5"
+                    className="w-full md:w-auto shrink-0 px-4 py-2.5 rounded-lg text-xs font-mono font-bold bg-dev-elevated border border-dev-border text-dev-textBright hover:bg-dev-amber hover:text-dev-bg hover:border-dev-amber transition-all flex items-center justify-center space-x-1.5 shadow-sm"
                   >
                     <Play className="w-3.5 h-3.5 fill-current" />
                     <span>Run Formula</span>

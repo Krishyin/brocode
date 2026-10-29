@@ -31,6 +31,6 @@ export interface TermDetail {
 export interface EmployeeRecord {
   id: number;
   name: string;
-  department: 'IT' | 'HR';
-  status: 'Active' | 'Inactive';
+  department: string;
+  status: string;
 }

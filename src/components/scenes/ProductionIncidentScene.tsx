@@ -27,67 +27,70 @@ export const ProductionIncidentScene: React.FC<Props> = ({ onComplete }) => {
   const [isRunningVerification, setIsRunningVerification] = useState(false);
   const [isResolved, setIsResolved] = useState(false);
 
-  // Evidence data
+  // Evidence data reflecting real team context (Ramakrishnan, Krishna, Hema)
   const incidentLogs = [
-    { time: '09:41:02.104', level: 'INFO', msg: 'Incoming registration request [ReqId: rq-9941a]' },
-    { time: '09:41:02.119', level: 'INFO', msg: 'Request body received (bytes: 182, mime: application/json)' },
-    { time: '09:41:02.126', level: 'WARN', msg: 'SchemaValidator: Mandatory field [contactEmail] is undefined in payload' },
-    { time: '09:41:02.130', level: 'ERROR', msg: 'Registration rejected: ValidationException(Field "contactEmail" required)' },
-    { time: '09:41:02.131', level: 'INFO', msg: 'Error response returned: HTTP 422 Unprocessable Entity' }
+    { time: '10:41:02.104', level: 'INFO', msg: 'Incoming deployment dispatch [ReqId: rq-krishna-solo-01]' },
+    { time: '10:41:02.119', level: 'INFO', msg: 'Release payload received for team [Lead: Ramakrishnan, Dev: Krishna, QA: Hema]' },
+    { time: '10:41:02.126', level: 'WARN', msg: 'SchemaValidator: Mandatory security token [architectApprovalKey] missing in release contract' },
+    { time: '10:41:02.130', level: 'ERROR', msg: 'Deployment rejected: ValidationException(Field "architectApprovalKey" required by Ramakrishnan\'s governance rule)' },
+    { time: '10:41:02.131', level: 'INFO', msg: 'Error response returned: HTTP 422 Unprocessable Entity' }
   ];
 
   const resolvedLogs = [
-    { time: '09:45:10.880', level: 'INFO', msg: 'Incoming registration request [ReqId: rq-9950b]' },
-    { time: '09:45:10.892', level: 'INFO', msg: 'Request body received with contactEmail [kavitha.raman@demo.local]' },
-    { time: '09:45:10.898', level: 'INFO', msg: 'SchemaValidator: All required fields present and typed' },
-    { time: '09:45:10.908', level: 'INFO', msg: 'Transaction committed to patient database' },
-    { time: '09:45:10.910', level: 'INFO', msg: 'Response returned: HTTP 200 OK — Registration successful' }
+    { time: '10:45:10.880', level: 'INFO', msg: 'Re-triggering deployment pipeline [ReqId: rq-krishna-solo-02]' },
+    { time: '10:45:10.892', level: 'INFO', msg: 'Release payload verified with architectApprovalKey ["APPROVED_BY_RAMAKRISHNAN"]' },
+    { time: '10:45:10.898', level: 'INFO', msg: 'SchemaValidator: All 18 enterprise governance checks passed cleanly' },
+    { time: '10:45:10.908', level: 'INFO', msg: 'Production cluster synced: Power Platform Enterprise Connector live' },
+    { time: '10:45:10.910', level: 'INFO', msg: 'Response returned: HTTP 200 OK — Krishna resolved incident independently without escalating!' }
   ];
 
-  const rawPayload = `{\n  "patientId": "PT-2026-881",\n  "fullName": "Kavitha Raman",\n  "departmentCode": "CARDIO",\n  "dob": "1992-04-15"\n  /* Missing: "contactEmail" */\n}`;
+  const rawPayload = `{\n  "pipelineId": "PIPE-POWERAPPS-2026",\n  "service": "Enterprise Workflow Connector",\n  "leadArchitect": "Ramakrishnan",\n  "developer": "Krishna",\n  "qaVerifier": "Hema",\n  "releaseVersion": "v3.2.0"\n  /* Missing: "architectApprovalKey" */\n}`;
 
-  const patchedPayload = `{\n  "patientId": "PT-2026-881",\n  "fullName": "Kavitha Raman",\n  "departmentCode": "CARDIO",\n  "dob": "1992-04-15",\n  "contactEmail": "kavitha.raman@demo.local"  // PATCH APPLIED\n}`;
+  const patchedPayload = `{\n  "pipelineId": "PIPE-POWERAPPS-2026",\n  "service": "Enterprise Workflow Connector",\n  "leadArchitect": "Ramakrishnan",\n  "developer": "Krishna",\n  "qaVerifier": "Hema",\n  "releaseVersion": "v3.2.0",\n  "architectApprovalKey": "APPROVED_BY_RAMAKRISHNAN"  // PATCH APPLIED\n}`;
 
-  const validationSchema = `// PatientRegistrationContract (v2.4.1 Strict Schema)
-export interface PatientRegistrationContract {
-  patientId: string;       // Mandatory UUID / String
-  fullName: string;        // Mandatory Name string
-  departmentCode: string;  // Mandatory Dept Enum
-  dob: string;             // Mandatory ISO Date
-  contactEmail: string;    // MANDATORY [Added in commit 84f910]
+  const validationSchema = `// EnterpriseDeploymentContract (Governance Standard v3.2)
+// Authored by: Ramakrishnan (Lead Architect)
+export interface EnterpriseDeploymentContract {
+  pipelineId: string;
+  service: string;
+  leadArchitect: "Ramakrishnan";
+  developer: "Krishna";
+  qaVerifier: "Hema";
+  releaseVersion: string;
+  architectApprovalKey: string; // MANDATORY: Required to authorize production rollout
 }`;
 
-  const gitChangeSummary = `Commit 84f910a (HEAD -> release/v2.4.1)
-Author: Core Platform Team
-Date: 2 hours ago
-Subject: feat(notify): enforce mandatory contactEmail for automated notification alerts
+  const gitChangeSummary = `Commit 9a204ba (HEAD -> main, tag: v3.2.0)
+Author: Ramakrishnan <lead.architect@enterprise.local>
+Date: Today, 08:30 AM
+Subject: feat(governance): enforce architectApprovalKey on all solo production dispatches
 
 Diff:
-+ if (!payload.contactEmail || !payload.contactEmail.includes('@')) {
-+   throw new ValidationException('Field "contactEmail" is required');
++ if (!payload.architectApprovalKey) {
++   throw new ValidationException('Field "architectApprovalKey" required by Ramakrishnan\\'s governance rule');
 + }`;
 
   const hypotheses = [
     {
       id: 'h1',
-      title: 'Hypothesis 1: Database Connection Pool Starvation',
-      summary: 'PostgreSQL pool exhausted causing transactions to drop.',
+      title: 'Hypothesis 1: Database Connection Pool Exhausted',
+      summary: 'PostgreSQL connection pool exhausted causing the deployment transaction to drop.',
       isCorrect: false,
-      contradiction: 'Contradicted by evidence: Logs show the request failed inside SchemaValidator in 12ms before database query initiation. DB metrics are 100% healthy.'
+      contradiction: 'Contradicted by evidence: Telemetry shows the request failed inside SchemaValidator within 12ms before touching any database queries. DB pool is 100% idle.'
     },
     {
       id: 'h2',
-      title: 'Hypothesis 2: Schema Drift — Missing Mandatory contactEmail',
-      summary: 'Release v2.4.1 made contactEmail mandatory, but the registration client payload omits it.',
+      title: 'Hypothesis 2: Schema Drift — Missing architectApprovalKey',
+      summary: 'Ramakrishnan\'s latest commit 9a204b made architectApprovalKey mandatory, which Krishna\'s initial solo payload omitted.',
       isCorrect: true,
-      contradiction: 'Confirmed by evidence: Git commit 84f910 added strict contactEmail validation. Both the WARN log and SchemaValidator rule confirm this exact missing property.'
+      contradiction: 'Confirmed by evidence: Commit 9a204b by Ramakrishnan explicitly introduced the mandatory architectApprovalKey check. Both the application logs and schema validation rules match.'
     },
     {
       id: 'h3',
-      title: 'Hypothesis 3: API Gateway Network Timeout',
-      summary: 'Inbound proxy dropped connection due to 30-second timeout threshold.',
+      title: 'Hypothesis 3: Cloud Gateway Inbound Timeout',
+      summary: 'Azure API Gateway dropped connection due to 30-second timeout threshold.',
       isCorrect: false,
-      contradiction: 'Contradicted by evidence: Total turnaround time was 27ms, and the server explicitly returned HTTP 422 Unprocessable Entity, not 504 Gateway Timeout.'
+      contradiction: 'Contradicted by evidence: Total round-trip was 27ms, and the server explicitly generated an HTTP 422 Unprocessable Entity payload, not a 504 Gateway Timeout.'
     }
   ];
 
@@ -136,27 +139,27 @@ Diff:
           <div>
             <div className="flex items-center space-x-2 text-xs font-mono">
               <span className={`w-2 h-2 rounded-full ${isResolved ? 'bg-dev-green-light' : 'bg-dev-red-light animate-pulse'}`}></span>
-              <span className={isResolved ? 'text-dev-green-light' : 'text-dev-red-light font-bold'}>
-                {isResolved ? 'INCIDENT RESOLVED // POST-MORTEM STABLE' : 'CRITICAL INCIDENT // ACTIVE'}
+              <span className={isResolved ? 'text-dev-green-light font-bold' : 'text-dev-red-light font-bold'}>
+                {isResolved ? 'INCIDENT RESOLVED // ZERO ESCALATION NEEDED' : 'CRITICAL PRODUCTION INCIDENT // ACTIVE'}
               </span>
               <span className="text-dev-border">•</span>
-              <span className="text-dev-textMuted font-mono">PROD-4821</span>
+              <span className="text-dev-textMuted font-mono">PROD-7701</span>
             </div>
 
             <h1 className="text-xl sm:text-2xl font-bold text-dev-textBright mt-1">
-              {isResolved ? 'Root Cause Solved: Patient Registration Service' : 'Investigating Production Failure: Patient Registration'}
+              {isResolved ? 'Root Cause Solved: PowerApps Enterprise Pipeline Live' : 'Investigating Production Pipeline: PowerApps Enterprise Connector'}
             </h1>
             <p className="text-sm text-dev-textDim mt-1">
               {isResolved 
-                ? 'Regression test suite passed with zero regressions. System telemetry nominal.' 
-                : 'Service: Patient Registration // Severity: HIGH // Root cause undetermined. Inspect telemetry and logs.'}
+                ? 'Krishna diagnosed schema drift, patched the payload, and verified all 18 regression suites with zero escalation to Ramakrishnan.' 
+                : 'Service: Enterprise Connector // Team: Ramakrishnan, Krishna, Hema // Deployer: Krishna // Root cause undetermined. Inspect telemetry and logs.'}
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 bg-dev-panel px-3 py-2 rounded-lg border border-dev-border text-xs font-mono">
-            <span className="text-dev-textMuted">SEVERITY:</span>
+          <div className="flex items-center space-x-2 bg-dev-panel px-3 py-2 rounded-lg border border-dev-border text-xs font-mono self-start md:self-auto">
+            <span className="text-dev-textMuted">STATUS:</span>
             <span className={isResolved ? 'text-dev-green-light font-bold' : 'text-dev-red-light font-bold'}>
-              {isResolved ? 'RESOLVED (P1)' : 'CRITICAL (P1)'}
+              {isResolved ? 'RESOLVED (P1)' : 'BLOCKED (P1)'}
             </span>
           </div>
         </div>
@@ -183,7 +186,7 @@ Diff:
             }`}
           >
             <FileJson className="w-3.5 h-3.5" />
-            <span>Request Payload</span>
+            <span>Release Payload</span>
           </button>
 
           <button
@@ -193,7 +196,7 @@ Diff:
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>Validation Rules</span>
+            <span>Ramakrishnan's Validation Rules</span>
           </button>
 
           <button
@@ -222,7 +225,7 @@ Diff:
           {activeTab === 'logs' && (
             <div className="space-y-2 animate-fade-in">
               <div className="text-xs text-dev-textMuted uppercase tracking-wider mb-2">
-                Realtime Stream: service/patient-registration:stdout
+                Realtime Stream: pipeline/enterprise-connector:stdout
               </div>
               {(isResolved ? resolvedLogs : incidentLogs).map((l, i) => (
                 <div key={i} className="flex items-start space-x-2 sm:space-x-3 text-xs leading-relaxed">
@@ -245,7 +248,7 @@ Diff:
           {activeTab === 'payload' && (
             <div className="space-y-3 animate-fade-in">
               <div className="text-xs text-dev-textMuted uppercase tracking-wider">
-                Inbound HTTP Request Body (Patient Payload)
+                Inbound Deployment Request Body (Krishna's Solo Dispatch)
               </div>
               <pre className="p-4 rounded bg-dev-surface border border-dev-border text-dev-textBright overflow-x-auto leading-relaxed">
                 <code>{isPatchApplied ? patchedPayload : rawPayload}</code>
@@ -256,7 +259,7 @@ Diff:
           {activeTab === 'validation' && (
             <div className="space-y-3 animate-fade-in">
               <div className="text-xs text-dev-textMuted uppercase tracking-wider">
-                Service Contract & Validation Schema Definition
+                Enterprise Deployment Schema // Authored by Ramakrishnan
               </div>
               <pre className="p-4 rounded bg-dev-surface border border-dev-border text-dev-amber-light/90 overflow-x-auto leading-relaxed">
                 <code>{validationSchema}</code>
@@ -267,7 +270,7 @@ Diff:
           {activeTab === 'git' && (
             <div className="space-y-3 animate-fade-in">
               <div className="text-xs text-dev-textMuted uppercase tracking-wider">
-                Git Release Log (Latest Deployment History)
+                Git Release Log (Latest Governance Deployment)
               </div>
               <pre className="p-4 rounded bg-dev-surface border border-dev-border text-dev-textDim overflow-x-auto leading-relaxed">
                 <code>{gitChangeSummary}</code>
@@ -278,7 +281,7 @@ Diff:
           {activeTab === 'response' && (
             <div className="space-y-3 animate-fade-in">
               <div className="text-xs text-dev-textMuted uppercase tracking-wider">
-                Client Response Payload
+                Gateway Response Payload
               </div>
               <pre className={`p-4 rounded border overflow-x-auto leading-relaxed ${
                 isResolved 
@@ -286,8 +289,8 @@ Diff:
                   : 'bg-dev-red-glow border-dev-red-light/40 text-dev-red-light'
               }`}>
                 <code>{isResolved 
-                  ? JSON.stringify({ statusCode: 200, message: "Patient registered successfully", patientId: "PT-2026-881" }, null, 2)
-                  : JSON.stringify({ statusCode: 422, error: "Unprocessable Entity", validation: { field: "contactEmail", error: "Required field missing from schema v2.4.1" } }, null, 2)
+                  ? JSON.stringify({ statusCode: 200, status: "success", message: "Deployment approved. Krishna resolved incident without escalation!", release: "v3.2.0" }, null, 2)
+                  : JSON.stringify({ statusCode: 422, error: "Unprocessable Entity", validation: { field: "architectApprovalKey", error: "Required governance token missing from schema v3.2.0" } }, null, 2)
                 }</code>
               </pre>
             </div>
@@ -373,7 +376,7 @@ Diff:
                   {currentH.isCorrect && !isResolved && (
                     <div className="pt-3 border-t border-dev-border/60 flex flex-col sm:flex-row items-center justify-between gap-3">
                       <div className="text-xs font-mono text-dev-textMuted">
-                        {!isPatchApplied ? 'Step 1: Patch the client request payload' : 'Step 2: Trigger regression test suite'}
+                        {!isPatchApplied ? 'Step 1: Patch the client request payload with architectApprovalKey' : 'Step 2: Trigger regression test suite'}
                       </div>
 
                       {!isPatchApplied ? (
@@ -382,7 +385,7 @@ Diff:
                           className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-dev-amber text-dev-bg font-mono font-bold text-xs uppercase tracking-wider hover:bg-dev-amber-light shadow-md transition-all flex items-center justify-center space-x-2"
                         >
                           <Cpu className="w-4 h-4" />
-                          <span>Apply Patch: Add contactEmail</span>
+                          <span>Apply Patch: Add architectApprovalKey</span>
                         </button>
                       ) : (
                         <button
@@ -391,7 +394,7 @@ Diff:
                           className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-dev-green-light text-dev-bg font-mono font-bold text-xs uppercase tracking-wider hover:bg-dev-green shadow-md transition-all flex items-center justify-center space-x-2"
                         >
                           <Play className="w-4 h-4 fill-current" />
-                          <span>{isRunningVerification ? 'Running Regression Suite...' : 'Verify Fix in Staging'}</span>
+                          <span>{isRunningVerification ? 'Running Regression Suite...' : 'Verify Fix & Deploy'}</span>
                         </button>
                       )}
                     </div>
@@ -411,13 +414,13 @@ Diff:
               <CheckCircle2 className="w-4 h-4" /> ROOT CAUSE: CONFIRMED
             </span>
             <span className="text-dev-green-light">FIX: APPLIED</span>
-            <span className="text-dev-green-light">REGRESSION CHECK: PASSED</span>
+            <span className="text-dev-green-light">REGRESSION CHECK: PASSED (18/18)</span>
             <span className="text-dev-textBright font-semibold">INCIDENT STATUS: RESOLVED</span>
           </div>
 
           <div className="space-y-2">
             <p className="text-sm sm:text-base text-dev-textMain leading-relaxed font-sans">
-              The production incident has been systematically diagnosed and resolved. No panic, no guessing—just evidence collection, careful hypothesis testing, and clean execution.
+              The production incident has been systematically diagnosed and resolved. No panic, no guessing—just evidence collection, careful hypothesis testing, and clean execution. Krishna resolved it independently without needing to escalate to Ramakrishnan.
             </p>
           </div>
 
